@@ -1,0 +1,11 @@
+pandas
+numpy
+requests
+openai
+streamlit
+gspread
+python-dotenv
+matplotlib           
+seaborn              
+plotly              
+jupyter              
