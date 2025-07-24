@@ -1,94 +1,91 @@
-
 # 📊 Macro Scenario Generator
 
-**Macro Scenario Generator** es una herramienta que permite simular escenarios macroeconómicos a partir de shocks definidos por el usuario, generando series temporales coherentes y una narrativa explicativa automática mediante modelos LLM (GPT-4o).
+**Macro Scenario Generator** is a tool designed to simulate macroeconomic scenarios based on user-defined shocks. It generates consistent time series for key economic variables, provides automatic natural language narratives using LLMs (GPT-4o), and offers a visual dashboard for exploration and export.
 
 ---
 
-## 🧠 Objetivo
+## 🎯 Objective
 
-Desarrollar una herramienta académica que integre datos reales, modelos cuantitativos y lenguaje natural para analizar cómo se propagan los shocks en variables clave como:
+To develop an academic and functional tool that integrates real data, a basic quantitative model, and natural language generation to analyze how economic shocks propagate across:
 
-- PIB  
-- Inflación  
-- Tipos de interés  
-- Spreads soberanos  
-- Divisas (FX)  
-- Equity (índice bursátil)
+- GDP  
+- Inflation  
+- Interest rates  
+- Sovereign spreads  
+- Exchange rates (FX)  
+- Equity index
 
 ---
 
-## ⚙️ Estructura del proyecto
+## ⚙️ Project Structure
 
 ```
 macro-scenario-generator/
 │
-├── data/                  # Datos crudos y procesados (ETL)
-├── API/                   # Llamadas a APIs externas (FRED, ECB, OpenAI)
-├── engine/                # Modelo cuantitativo y funciones de propagación
-├── dashboard/             # App Streamlit para visualización
-├── output/                # Escenarios generados (CSV, narrativa, Markdown)
-├── .env                   # Claves API (NO subir a GitHub)
-├── requirements.txt       # Dependencias del proyecto
-├── run_scenario.py        # Script principal de orquestación
-└── README.md              # Este documento
+├── data/                  # Raw and processed data (ETL)
+├── API/                   # External API calls (FRED, ECB, OpenAI)
+├── engine/                # Shock propagation logic and quantitative model
+├── dashboard/             # Streamlit app for scenario visualization
+├── output/                # Generated scenarios (CSV, markdown, narrative)
+├── .env                   # API keys (DO NOT push to GitHub)
+├── requirements.txt       # Python dependencies
+├── run_scenario.py        # Main script to run full scenario
+└── README.md              # Project documentation
 ```
 
 ---
 
-## 🚀 Instalación y uso
+## 🚀 Installation & Usage
 
-### 1. Clonar el repositorio
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/tu_usuario/macro-scenario-generator.git
+git clone https://github.com/your_username/macro-scenario-generator.git
 cd macro-scenario-generator
 ```
 
-### 2. Crear y activar entorno virtual
+### 2. Create and activate virtual environment
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-### 3. Instalar dependencias
+### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Configurar claves API
+### 4. Configure your API keys
 
-Crea un archivo `.env` con tus claves:
+Create a `.env` file in the root directory:
 
 ```
-FRED_API_KEY=tu_clave_fred
-OPENAI_API_KEY=tu_clave_openai
+FRED_API_KEY=your_fred_key
+OPENAI_API_KEY=your_openai_key
 ```
 
 ---
 
-## 📦 Ejecutar un escenario
+## 📦 Run a scenario
 
-Ejecuta el script principal con un archivo de entrada JSON:
+To generate a scenario from a defined shock:
 
 ```bash
 python run_scenario.py shocks/input_example.json
 ```
 
-Esto generará:
+This will produce:
 
-- Series temporales simuladas en CSV  
-- Narrativa macroeconómica (ES/EN)  
-- Tabla resumen en Markdown  
-- Gráficos interactivos en el dashboard
+- Time series simulation (CSV)  
+- Narrative (Spanish/English)  
+- Markdown summary  
+- Visual charts for dashboard
 
 ---
 
-## 🖥️ Dashboard (opcional)
-
-Puedes lanzar la interfaz Streamlit con:
+## 🖥️ Launch the dashboard (optional)
 
 ```bash
 streamlit run dashboard/app.py
@@ -96,17 +93,23 @@ streamlit run dashboard/app.py
 
 ---
 
-## 📚 Documentación técnica
+## 📚 Technical Architecture
 
-El proyecto sigue una estructura modular por fases:
+The project follows a modular design:
 
-1. **ETL** → APIs de FRED y ECB + limpieza de datos  
-2. **Modelo cuantitativo** → propagación de shocks  
-3. **Narrativa automática** → GPT-4o con tabla in-context  
-4. **Exportador** → CSV, Markdown y Google Sheets  
-5. **Visualización** → Streamlit dashboard con descarga  
+1. **ETL** → Fetch and normalize data from FRED/ECB  
+2. **Quant Engine** → Propagate macroeconomic shocks  
+3. **Narrative Module** → Generate coherent explanations with GPT-4o  
+4. **Export Module** → Write results to CSV, Markdown, Google Sheets  
+5. **Dashboard** → Explore output visually with download options  
 
 ---
 
+## ✅ Success Metrics (for academic delivery)
 
->>>>>>> 2332758 (Initial commit: estructura base, .gitignore y dependencias)
+- ⏱️ Scenario generation time ≤ 30 seconds  
+- ✅ Logical consistency > 95%  
+- 📈 Evaluation score ≥ 4/5  
+- 💬 At least 50 reactions on LinkedIn when shared as a whitepaper
+
+---
