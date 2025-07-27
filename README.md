@@ -4,7 +4,7 @@ A comprehensive macroeconomic scenario generation system using Vector Autoregres
 
 ## 🌐 Live Demo
 
-**Access the live application:** [Macro Scenario Generator on Streamlit Cloud](https://macro-scenario-generator.streamlit.app)
+**Access the live application:** [Macro Scenario Generator on Streamlit Cloud](https://macro-scenario-generator-5tjq2bjtfww7hdkfyspbzg.streamlit.app/)
 
 ## 📋 Project Overview
 
@@ -63,7 +63,7 @@ streamlit run streamlit_app.py
 ### Cloud Deployment
 
 The application is automatically deployed on Streamlit Cloud and accessible at:
-**https://macro-scenario-generator.streamlit.app**
+**https://macro-scenario-generator-5tjq2bjtfww7hdkfyspbzg.streamlit.app/**
 
 ## 🎯 Core Features
 
@@ -188,7 +188,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🔗 Links
 
-- **Live Application:** https://macro-scenario-generator.streamlit.app
+- **Live Application:** https://macro-scenario-generator-5tjq2bjtfww7hdkfyspbzg.streamlit.app/
 - **GitHub Repository:** https://github.com/your-username/macro-scenario-generator
 - **Documentation:** See `docs/` folder for detailed architecture and usage guides
 
