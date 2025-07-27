@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-## 🚀 Get Started in 5 Minutes
+## Get Started in 5 Minutes
 
 ### Option 1: Use the Live Application
 Visit our live application: **[Macro Scenario Generator](https://macro-scenario-generator-5tjq2bjtfww7hdkfyspbzg.streamlit.app/)**
@@ -26,7 +26,7 @@ streamlit run streamlit_app.py
 4. **Open your browser:**
    - Go to `http://localhost:8501`
 
-## 🎯 How to Use
+## How to Use
 
 ### 1. Load the VAR Model
 - Click "Cargar/Entrenar Modelo VAR" in the sidebar
@@ -48,7 +48,7 @@ streamlit run streamlit_app.py
 - Click "Generar Narrativa" for AI analysis
 - Export results to CSV
 
-## 📊 Understanding the Results
+## Understanding the Results
 
 ### Variables Explained
 - **GDP:** Gross Domestic Product (economic growth)
@@ -62,7 +62,7 @@ streamlit run streamlit_app.py
 - **Y-axis:** Normalized values (0-1 scale)
 - **X-axis:** Time horizon in months
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 1. **Model won't load:** Check internet connection
