@@ -15,4 +15,11 @@ __pycache__/
 
 # Archivos de Jupyter
 .ipynb_checkpoints/
-data/
+
+# Datos - excluir solo archivos grandes, incluir series.pkl
+data/*.csv
+data/scenarios/
+data/long_rate.pkl
+data/policy_rate.pkl
+data/hicp_ea.pkl
+data/real_gdp_usa.pkl
