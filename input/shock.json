@@ -1,0 +1,22 @@
+{
+  "scenario_name": "Crisis energética europea",
+  "author": "Fran Cervantes Martínez",
+  "date_created": "2025-07-25",
+  "shocks": [
+    {
+      "variable": "inflation",
+      "shock_type": "positive",
+      "magnitude": 2.5,
+      "start_date": "2025-10-01",
+      "duration_months": 6
+    },
+    {
+      "variable": "gdp",
+      "shock_type": "negative",
+      "magnitude": -1.2,
+      "start_date": "2025-11-01",
+      "duration_months": 4
+    }
+  ]
+}
+

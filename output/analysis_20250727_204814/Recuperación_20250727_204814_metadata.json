@@ -1,0 +1,16 @@
+{
+  "scenario_name": "Recuperaci\u00f3n",
+  "export_date": "2025-07-27T20:48:14.811916",
+  "variables": [
+    "gdp",
+    "inflation",
+    "policy_rate",
+    "real_rate"
+  ],
+  "time_horizon": 12,
+  "data_points": 48,
+  "value_range": {
+    "min": -0.3342540764277115,
+    "max": 2.4504563015584004
+  }
+}

@@ -1,0 +1,13 @@
+**Analytical Report: European Energy Crisis 2025-2026**
+
+The simulated scenario "Crisis energética europea" initiated by Fran Cervantes Martínez on July 25, 2025, presents a dual economic shock impacting the European economy. Beginning October 1, 2025, inflation experienced a positive shock of +2.5 percentage points (pp) lasting six months, while GDP faced a negative shock of -1.2 pp starting November 1, 2025, persisting for four months.
+
+The Vector Autoregression (VAR) model forecasts reveal significant monthly changes across key economic variables. Inflation surged consistently, reaching a peak increase of 2.642 pp by June 2026. Concurrently, GDP growth decelerated, with the most pronounced slowdown observed during the initial months of the shock, stabilizing at a modest growth rate of 0.037 by mid-2026. The policy rate exhibited a slight downward trend, decreasing by approximately 0.045 pp monthly, while the real rate followed a similar trajectory, reflecting a marginal decline of about 0.123 pp by June 2026.
+
+The persistence of elevated inflation, alongside subdued GDP growth, suggests a scenario akin to stagflation, characterized by stagnant economic output coupled with rising price levels. This economic environment poses significant challenges for policymakers. The transitory nature of the GDP shock contrasts with the more persistent inflationary pressures, indicating potential supply-side constraints, likely exacerbated by energy market disruptions.
+
+In response, central banks may face the dilemma of balancing inflation control with supporting economic growth. Conventional monetary policy tools, such as interest rate adjustments, may prove less effective given the supply-driven inflation. Therefore, a nuanced approach, potentially involving targeted fiscal interventions to alleviate supply bottlenecks and enhance energy infrastructure, could be warranted.
+
+Governments might consider implementing measures to diversify energy sources and improve energy efficiency, thereby mitigating future vulnerabilities. Additionally, fiscal policies aimed at supporting vulnerable households and businesses could help cushion the adverse effects of the crisis.
+
+**Key Takeaway:** The European energy crisis underscores the complexity of managing stagflationary pressures, necessitating coordinated monetary and fiscal policy responses to stabilize the economy and foster sustainable growth.

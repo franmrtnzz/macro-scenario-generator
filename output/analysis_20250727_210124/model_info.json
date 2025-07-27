@@ -1,0 +1,14 @@
+{
+  "model_type": "VAR",
+  "variables": [
+    "gdp",
+    "inflation",
+    "policy_rate",
+    "real_rate"
+  ],
+  "lags": 1,
+  "observations": 353,
+  "aic": -6.93646301610046,
+  "bic": -6.761212339298951,
+  "export_date": "2025-07-27T21:01:24.597558"
+}

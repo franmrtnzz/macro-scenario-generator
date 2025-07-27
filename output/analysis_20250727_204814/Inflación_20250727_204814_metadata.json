@@ -1,0 +1,16 @@
+{
+  "scenario_name": "Inflaci\u00f3n",
+  "export_date": "2025-07-27T20:48:14.810988",
+  "variables": [
+    "gdp",
+    "inflation",
+    "policy_rate",
+    "real_rate"
+  ],
+  "time_horizon": 12,
+  "data_points": 48,
+  "value_range": {
+    "min": -0.35343249006647226,
+    "max": 2.6390445815465218
+  }
+}
