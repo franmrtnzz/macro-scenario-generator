@@ -1,148 +1,158 @@
-# Macro Scenario Generator
+# 📊 Macro Scenario Generator
 
-A comprehensive macroeconomic scenario generation system using Vector Autoregression (VAR) models and AI-powered narrative generation.
+[![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://macro-scenario-generator-5tjq2bjtfww7hdkfyspbzg.streamlit.app/)
+[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=for-the-badge)]()
+
+> **Advanced macroeconomic scenario simulation using Vector Autoregression (VAR) models and AI-powered narrative generation**
 
 ## 🌐 Live Demo
 
-**Access the live application:** [Macro Scenario Generator on Streamlit Cloud](https://macro-scenario-generator-5tjq2bjtfww7hdkfyspbzg.streamlit.app/)
+**[🚀 Try it now!](https://macro-scenario-generator-5tjq2bjtfww7hdkfyspbzg.streamlit.app/)**
 
-## 📋 Project Overview
+## 📋 Overview
 
-This project simulates macroeconomic scenarios using VAR models and generates AI-powered narratives for economic analysis. It's designed for central banks, financial institutions, and economic researchers.
+The Macro Scenario Generator is a comprehensive tool for simulating and analyzing macroeconomic scenarios. It combines:
 
-## 🏗️ Project Structure
+- **🔬 Quantitative Modeling**: Robust VAR models for economic forecasting
+- **🤖 AI Integration**: GPT-4o powered narrative generation
+- **📊 Interactive Dashboard**: Real-time scenario configuration and visualization
+- **📈 Real Data**: Economic time series from ECB and FRED APIs
+
+### Key Features
+
+| Feature | Description |
+|---------|-------------|
+| 🎯 **VAR Modeling** | Vector Autoregression with 4 key variables (GDP, Inflation, Policy Rate, Real Rate) |
+| 📊 **Interactive Charts** | Real-time visualization with Plotly |
+| 🤖 **AI Narratives** | Automatic economic analysis with GPT-4o |
+| 📁 **Export Capabilities** | CSV export for further analysis |
+| 🎮 **Custom Scenarios** | User-defined shocks and parameters |
+| ⚡ **Real-time Processing** | Instant simulation results |
+
+## 🏗️ Architecture
 
 ```
 macro-scenario-generator/
-├── api/                    # External API integrations (ECB, FRED)
-├── config/                 # Configuration files and shock rules
-├── dashboard/              # Streamlit dashboard components
-├── data/                   # Economic time series data
-├── docs/                   # Documentation and architecture
-├── etl/                    # Data pipeline and transformations
-├── figs/                   # Generated figures and charts
-├── input/                  # Input templates and scenarios
-├── output/                 # Simulation results and exports
-├── pruebas/                # Test suite and validation
-├── quant/                  # VAR model and quantitative engine
-├── scripts/                # Narrative generation and utilities
-├── utils/                  # Helper functions and utilities
-├── streamlit_app.py        # Main Streamlit application
-└── requirements.txt        # Python dependencies
+├── 📁 api/                    # External API integrations
+│   ├── ecb.py                # European Central Bank API
+│   └── fred.py               # Federal Reserve API
+├── 📁 quant/                  # Core quantitative engine
+│   ├── var_model.py          # VAR model implementation
+│   └── shock_propagation.py  # Shock simulation logic
+├── 📁 dashboard/              # Web interface components
+│   └── simple_app.py         # Streamlit dashboard
+├── 📁 scripts/                # Utility scripts
+│   └── generate_narrative.py # AI narrative generation
+├── 📁 data/                   # Economic time series
+│   └── series.pkl            # Preprocessed data
+├── 📁 docs/                   # Documentation
+│   ├── technical/            # Technical documentation
+│   └── user_guide/           # User guides
+├── 📁 examples/               # Usage examples
+├── 📁 tests/                  # Test suite
+├── streamlit_app.py          # Main application
+└── requirements.txt          # Dependencies
 ```
 
 ## 🚀 Quick Start
 
-### Local Development
+### Option 1: Live Application
+Visit **[https://macro-scenario-generator-5tjq2bjtfww7hdkfyspbzg.streamlit.app/](https://macro-scenario-generator-5tjq2bjtfww7hdkfyspbzg.streamlit.app/)** and start using immediately!
 
-1. **Clone the repository:**
+### Option 2: Local Installation
+
 ```bash
-git clone https://github.com/your-username/macro-scenario-generator.git
+# Clone the repository
+git clone https://github.com/franmrtnzz/macro-scenario-generator.git
 cd macro-scenario-generator
-```
 
-2. **Create virtual environment:**
-```bash
+# Create virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
 
-3. **Install dependencies:**
-```bash
+# Install dependencies
 pip install -r requirements.txt
-```
 
-4. **Run the dashboard:**
-```bash
+# Run the application
 streamlit run streamlit_app.py
 ```
 
-5. **Access the application:**
-   - Open your browser and go to `http://localhost:8501`
+Open your browser and go to `http://localhost:8501`
 
-### Cloud Deployment
+## 🎯 How to Use
 
-The application is automatically deployed on Streamlit Cloud and accessible at:
-**https://macro-scenario-generator-5tjq2bjtfww7hdkfyspbzg.streamlit.app/**
+### 1. Load the Model
+Click "Cargar/Entrenar Modelo VAR" in the sidebar to initialize the VAR model.
 
-## 🎯 Core Features
+### 2. Choose a Scenario
+- **Pre-defined scenarios**: Recession, Inflation, Recovery
+- **Custom scenario**: Set your own shock values
 
-### 1. **Quantitative Engine (VAR Model)**
-- **Vector Autoregression (VAR)** with robust preprocessing
-- **Automatic variable selection** based on collinearity analysis
-- **Intelligent transformations** (diff/level) based on data characteristics
-- **Noise injection** for constant variables to ensure model stability
+### 3. Configure Parameters
+- Set time horizon (1-36 months)
+- Adjust shock magnitudes for each variable
 
-### 2. **Interactive Dashboard**
-- **Real-time scenario configuration** with custom shocks
-- **Pre-defined scenarios** (recession, inflation, recovery)
-- **Dynamic visualizations** with Plotly charts
-- **Statistical summaries** and data tables
-- **CSV export** functionality
+### 4. Run Simulation
+Click "Ejecutar Escenario" to generate results.
 
-### 3. **AI-Powered Narrative Generation**
-- **GPT-4o integration** for economic analysis
-- **Automatic narrative generation** based on simulation results
-- **Fallback narratives** when API is unavailable
-- **Professional economic analysis** in English
+### 5. Analyze Results
+- View interactive charts
+- Check statistical summaries
+- Generate AI-powered narrative
+- Export to CSV
 
-### 4. **Data Management**
-- **Real economic data** from ECB and FRED APIs
-- **Automatic data preprocessing** and frequency conversion
-- **Robust error handling** and validation
-- **Export capabilities** for further analysis
+## 📊 Understanding the Model
 
-## 📊 Technical Specifications
+### Variables
+- **GDP**: Gross Domestic Product (economic growth indicator)
+- **Inflation**: Consumer price inflation (HICP)
+- **Policy Rate**: Central bank interest rate
+- **Real Rate**: Inflation-adjusted interest rate
 
-- **Model:** VAR(1) with 4 variables (GDP, Inflation, Policy Rate, Real Rate)
-- **Data:** Monthly frequency, 353+ observations
-- **Framework:** Streamlit for web interface
-- **AI:** OpenAI GPT-4o for narrative generation
-- **Visualization:** Plotly for interactive charts
-- **Testing:** pytest framework with comprehensive test suite
+### Model Specifications
+- **Type**: Vector Autoregression (VAR)
+- **Lags**: 1 period
+- **Observations**: 353+ monthly periods
+- **Data Source**: ECB and FRED APIs
+- **Frequency**: Monthly
 
 ## 🔧 Configuration
 
 ### Environment Variables
-Create a `.env` file with:
-```
+Create a `.env` file for API access:
+```env
 OPENAI_API_KEY=your_openai_api_key_here
 ```
 
 ### Model Parameters
-- **Lags:** 1 (configurable)
-- **Minimum variables:** 2
-- **Correlation threshold:** 0.85
-- **Standard deviation threshold:** 0.0001
+- **Lags**: 1 (configurable)
+- **Minimum variables**: 2
+- **Correlation threshold**: 0.85
+- **Standard deviation threshold**: 0.0001
 
-## 📈 Example Outputs
+## 📚 Documentation
 
-### Simulation Results
-- **Time series forecasts** for all variables
-- **Statistical summaries** (initial/final values, changes, volatility)
-- **Interactive visualizations** with multiple timeframes
+- **[📖 User Guide](docs/user_guide/)** - Complete user documentation
+- **[🔧 Technical Docs](docs/technical/)** - Architecture and implementation details
+- **[🚀 Quick Start](docs/user_guide/quick_start.md)** - Get started in 5 minutes
+- **[📊 Examples](examples/)** - Usage examples and demonstrations
 
-### AI Narratives
-Professional economic analysis including:
-- **Shock impact assessment**
-- **Policy implications**
-- **Economic interpretation**
-- **Key takeaways**
+## 🧪 Testing
 
-## 🧪 Testing Framework
-
-Run the test suite:
+Run the comprehensive test suite:
 ```bash
-python -m pytest pruebas/
+python -m pytest tests/
 ```
 
 Test coverage includes:
-- VAR model training and validation
-- Shock simulation accuracy
-- Data preprocessing robustness
-- Export functionality
+- ✅ VAR model training and validation
+- ✅ Shock simulation accuracy
+- ✅ Data preprocessing robustness
+- ✅ Export functionality
 
-## 📚 Dependencies
+## 📦 Dependencies
 
 ### Core Libraries
 - **pandas** (≥1.5.0): Data manipulation
@@ -158,40 +168,67 @@ Test coverage includes:
 - **openai** (≥1.14.0): GPT-4o API integration
 - **python-dotenv** (≥1.0.0): Environment variable management
 
-### Visualization
-- **matplotlib** (≥3.7.0): Static plotting
-- **seaborn** (≥0.12.0): Statistical visualizations
-
 ## 🎓 Academic Context
 
-This project was developed as a Master's Final Project (TFM) demonstrating:
+This project was developed as a **Master's Final Project (TFM)** demonstrating:
 - **Advanced econometric modeling** with VAR techniques
 - **AI integration** in economic analysis
 - **Web application development** for financial tools
 - **Professional software engineering** practices
 
+### Citing This Work
+If you use this system in your research, please cite:
+```
+Macro Scenario Generator: A VAR-based Economic Simulation Tool
+Francisco Cervantes Martínez
+Master's Final Project, 2025
+```
+
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Submit a pull request
+We welcome contributions! Here's how you can help:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+
+### Development Setup
+```bash
+# Install development dependencies
+pip install -r requirements.txt
+pip install pytest pytest-cov
+
+# Run tests
+python -m pytest tests/ -v
+
+# Run with coverage
+python -m pytest tests/ --cov=quant --cov=scripts
+```
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 👨‍💻 Author
 
-**Francisco** - Master's Final Project (TFM)
+**Francisco Cervantes Martínez** - Master's Final Project (TFM)
 
 ## 🔗 Links
 
-- **Live Application:** https://macro-scenario-generator-5tjq2bjtfww7hdkfyspbzg.streamlit.app/
-- **GitHub Repository:** https://github.com/your-username/macro-scenario-generator
-- **Documentation:** See `docs/` folder for detailed architecture and usage guides
+- **🌐 Live Application**: [https://macro-scenario-generator-5tjq2bjtfww7hdkfyspbzg.streamlit.app/](https://macro-scenario-generator-5tjq2bjtfww7hdkfyspbzg.streamlit.app/)
+- **📚 Documentation**: [docs/](docs/)
+- **🐛 Issues**: [GitHub Issues](https://github.com/franmrtnzz/macro-scenario-generator/issues)
+- **💬 Discussions**: [GitHub Discussions](https://github.com/franmrtnzz/macro-scenario-generator/discussions)
 
 ---
 
-**Status:** Production Ready - All core functionalities operational and tested ✅
+<div align="center">
+
+**⭐ Star this repository if you find it useful!**
+
+[![GitHub stars](https://img.shields.io/github/stars/franmrtnzz/macro-scenario-generator?style=social)](https://github.com/franmrtnzz/macro-scenario-generator/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/franmrtnzz/macro-scenario-generator?style=social)](https://github.com/franmrtnzz/macro-scenario-generator/network/members)
+
+</div>
