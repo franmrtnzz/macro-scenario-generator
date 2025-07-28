@@ -188,3 +188,61 @@ def simulate_var_shock(results, shocks_dict: dict, steps: int = 12) -> pd.DataFr
     idx       = pd.date_range(last_date + pd.offsets.MonthBegin(1),
                               periods=steps, freq="MS")
     return pd.DataFrame(forecast, columns=results.names, index=idx)
+
+
+# ────────────────────────────────────────────────────────────────
+# Simulación de shocks persistentes (nuevo)
+# ────────────────────────────────────────────────────────────────
+def simulate_var_shock_persistent(
+    results,
+    shocks_dict: dict,
+    steps: int = 12,
+    shock_duration: int = 3,
+    shock_decay: float = 0.8
+) -> pd.DataFrame:
+    """
+    Simula shocks PERSISTENTES con decaimiento gradual.
+    - El shock se aplica durante 'shock_duration' periodos.
+    - En cada periodo, el shock decae multiplicando por 'shock_decay'**t.
+    - Si shock_duration=1 y shock_decay=1.0, es equivalente a un shock instantáneo.
+
+    Args:
+        results: Modelo VAR entrenado
+        shocks_dict: {var: {"magnitude": float}}
+        steps: meses a simular
+        shock_duration: duración del shock (meses)
+        shock_decay: factor de decaimiento (0 < decay <= 1)
+    Returns:
+        DataFrame con la simulación
+    """
+    p = results.k_ar
+    history = results.endog[-p:].copy()
+    n_vars = len(results.names)
+
+    # Crear matriz de shocks persistentes
+    shock_matrix = np.zeros((steps, n_vars))
+    for var, cfg in shocks_dict.items():
+        if var not in results.names:
+            raise ValueError(f"'{var}' no está en el VAR.")
+        idx = results.names.index(var)
+        magnitude = cfg["magnitude"]
+        for t in range(min(shock_duration, steps)):
+            decay_factor = shock_decay ** t
+            shock_matrix[t, idx] = magnitude * decay_factor
+
+    # Simular paso a paso con shocks persistentes
+    forecasts = []
+    current_history = history.copy()
+    for t in range(steps):
+        # Aplicar shock en este periodo
+        current_history[-1] += shock_matrix[t]
+        # Forecast de un paso
+        forecast_step = results.forecast(current_history, steps=1)
+        forecasts.append(forecast_step[0])
+        # Actualizar historia
+        current_history = np.vstack([current_history[1:], forecast_step])
+
+    # Crear DataFrame con fechas
+    last_date = pd.to_datetime(results.dates[-1])
+    idx = pd.date_range(last_date + pd.offsets.MonthBegin(1), periods=steps, freq="MS")
+    return pd.DataFrame(forecasts, columns=results.names, index=idx)

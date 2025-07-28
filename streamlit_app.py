@@ -13,7 +13,7 @@ from pathlib import Path
 # Añadir el directorio raíz al path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from quant.var_model import train_var_model, simulate_var_shock
+from quant.var_model import train_var_model, simulate_var_shock, simulate_var_shock_persistent
 
 
 def main():
@@ -86,15 +86,15 @@ def main():
     
     with col1:
         if st.button("📉 Ejecutar Recesión"):
-            run_scenario("Recesión", scenarios["Recesión"], var_results)
+            run_scenario("Recesión", scenarios["Recesión"])
     
     with col2:
         if st.button("📈 Ejecutar Inflación"):
-            run_scenario("Inflación", scenarios["Inflación"], var_results)
+            run_scenario("Inflación", scenarios["Inflación"])
     
     with col3:
         if st.button("📊 Ejecutar Recuperación"):
-            run_scenario("Recuperación", scenarios["Recuperación"], var_results)
+            run_scenario("Recuperación", scenarios["Recuperación"])
     
     st.markdown("---")
     
@@ -120,9 +120,12 @@ def main():
     with col2:
         st.subheader("Parámetros")
         steps = st.slider("Horizonte temporal (meses)", 1, 36, 12)
-        
+        # NUEVO: controles para shocks persistentes
+        shock_duration = st.slider("Duración del shock (meses)", 1, steps, min(3, steps))
+        shock_decay = st.slider("Decaimiento del shock (0.0-1.0)", 0.0, 1.0, 1.0, step=0.05)
+        st.info(f"Modo: {'Persistente' if shock_duration > 1 or shock_decay < 1.0 else 'Instantáneo'}")
         if st.button("🚀 Ejecutar Escenario Personalizado") and custom_shocks:
-            run_scenario("Personalizado", custom_shocks, var_results, steps)
+            run_scenario("Personalizado", custom_shocks, var_results, steps, shock_duration, shock_decay)
     
     # Mostrar resultados si existen
     if 'current_simulation' in st.session_state:
@@ -134,6 +137,8 @@ def main():
         
         # Mostrar datos en tabla
         st.subheader(f"📈 Datos de Simulación - {scenario_name}")
+        # Mostrar modo de shock
+        st.caption(f"Modo de shock: {st.session_state.get('shock_mode', 'Instantáneo')}")
         
         # Verificar que no hay columnas vacías
         if simulation_df.empty:
@@ -188,11 +193,17 @@ def main():
             )
 
 
-def run_scenario(scenario_name, shocks, var_results, steps=12):
+def run_scenario(scenario_name, shocks, var_results, steps=12, shock_duration=1, shock_decay=1.0):
     """Ejecuta un escenario y guarda los resultados en session_state."""
     with st.spinner(f"Simulando {scenario_name}..."):
         try:
-            simulation_df = simulate_var_shock(var_results, shocks, steps=steps)
+            # Usar shocks persistentes si corresponde
+            if shock_duration > 1 or shock_decay < 1.0:
+                simulation_df = simulate_var_shock_persistent(var_results, shocks, steps=steps, shock_duration=shock_duration, shock_decay=shock_decay)
+                st.session_state['shock_mode'] = f"Persistente (duración={shock_duration}, decaimiento={shock_decay})"
+            else:
+                simulation_df = simulate_var_shock(var_results, shocks, steps=steps)
+                st.session_state['shock_mode'] = "Instantáneo"
             st.session_state['current_simulation'] = simulation_df
             st.session_state['current_scenario'] = scenario_name
             st.success(f"✅ Simulación {scenario_name} completada")

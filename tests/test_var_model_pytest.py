@@ -10,7 +10,7 @@ from pathlib import Path
 # Añadir el directorio raíz al path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from quant.var_model import train_var_model, simulate_var_shock
+from quant.var_model import train_var_model, simulate_var_shock, simulate_var_shock_persistent
 
 
 class TestVARModel:
@@ -169,6 +169,43 @@ class TestVARModel:
             print("✅ Data quality issues handled gracefully")
         except Exception as e:
             pytest.fail(f"Model failed to handle data quality issues: {e}")
+
+    def test_simulate_var_shock_persistent_basic(self, var_results):
+        """Test básico de shock persistente (sin decaimiento)."""
+        shocks = {var_results.names[0]: {'magnitude': 0.5}}
+        forecast = simulate_var_shock_persistent(var_results, shocks, steps=6, shock_duration=3, shock_decay=1.0)
+        assert isinstance(forecast, pd.DataFrame)
+        assert forecast.shape[0] == 6
+        assert forecast.shape[1] == len(var_results.names)
+        assert not forecast.isna().any().any()
+        assert not (forecast == 0).all().all()
+        print("✅ Shock persistente básico funciona")
+
+    def test_simulate_var_shock_persistent_decay(self, var_results):
+        """Test de shock persistente con decaimiento."""
+        shocks = {var_results.names[0]: {'magnitude': 1.0}}
+        forecast = simulate_var_shock_persistent(var_results, shocks, steps=6, shock_duration=4, shock_decay=0.5)
+        # El primer valor debe ser mayor que el cuarto (por decaimiento)
+        col = var_results.names[0]
+        assert forecast[col].iloc[0] > forecast[col].iloc[3]
+        print("✅ Shock persistente con decaimiento funciona")
+
+    def test_simulate_var_shock_persistent_vs_instant(self, var_results):
+        """Comparar persistente vs instantáneo: persistente debe tener efecto acumulado mayor."""
+        shocks = {var_results.names[0]: {'magnitude': 0.2}}
+        forecast_instant = simulate_var_shock(var_results, shocks, steps=6)
+        forecast_persistent = simulate_var_shock_persistent(var_results, shocks, steps=6, shock_duration=3, shock_decay=1.0)
+        col = var_results.names[0]
+        # El valor final del persistente debe ser mayor (o igual)
+        assert forecast_persistent[col].iloc[-1] >= forecast_instant[col].iloc[-1]
+        print("✅ Persistente vs instantáneo: efecto acumulado correcto")
+
+    def test_simulate_var_shock_persistent_invalid_var(self, var_results):
+        """Test de error con variable inválida en persistente."""
+        shocks = {'invalid_var': {'magnitude': 1.0}}
+        with pytest.raises(ValueError, match="'invalid_var' no está en el VAR"):
+            simulate_var_shock_persistent(var_results, shocks, steps=6, shock_duration=2)
+        print("✅ Error de variable inválida en persistente manejado correctamente")
 
 
 if __name__ == "__main__":
