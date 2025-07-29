@@ -60,21 +60,28 @@ def generate_narrative(simulation_df: pd.DataFrame, scenario_info: Dict[str, Any
 
 def build_simple_prompt(simulation_df: pd.DataFrame, scenario_info: Dict[str, Any]) -> str:
     """
-    Construye un prompt simplificado para la narrativa.
+    Construye un prompt robusto para la narrativa, enfatizando la dirección y persistencia de los cambios.
     """
-    
     scenario_name = scenario_info.get("scenario_name", "Escenario Personalizado")
-    
+
     # Resumen estadístico de los datos
     stats = []
     for column in simulation_df.columns:
         initial = simulation_df[column].iloc[0]
         final = simulation_df[column].iloc[-1]
         change = final - initial
-        stats.append(f"{column}: {initial:.3f} → {final:.3f} (change: {change:+.3f})")
-    
+        always_negative = (simulation_df[column] < 0).all()
+        always_positive = (simulation_df[column] > 0).all()
+        if always_negative:
+            trend = "remains negative throughout"
+        elif always_positive:
+            trend = "remains positive throughout"
+        else:
+            trend = "changes sign during the period"
+        stats.append(f"{column}: {initial:.3f} → {final:.3f} (change: {change:+.3f}, {trend})")
+
     stats_text = "\n".join(stats)
-    
+
     prompt = f"""
 Analyze this macroeconomic simulation scenario:
 
@@ -92,14 +99,15 @@ Analyze this macroeconomic simulation scenario:
 - Real rate range: {simulation_df['real_rate'].min():.3f} to {simulation_df['real_rate'].max():.3f}
 
 Write a brief economic analysis (200-300 words) that includes:
-1. What the simulation shows about economic dynamics
-2. Whether the effects are persistent or transitory
-3. Policy implications for central banks
-4. A key takeaway
+1. What the simulation shows about economic dynamics, focusing on whether variables remain negative, positive, or change sign.
+2. Whether the effects are persistent or transitory.
+3. Policy implications for central banks.
+4. A key takeaway.
+
+IMPORTANT: If GDP or inflation remain negative throughout, do NOT describe the scenario as a recovery or improvement. Use terms like 'contraction', 'persistent recession', or 'continued disinflation' as appropriate. Be precise and avoid generic positive language if the data does not support it.
 
 Write in clear, professional English.
 """
-    
     return prompt
 
 

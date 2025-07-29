@@ -19,29 +19,29 @@ from quant.var_model import train_var_model, simulate_var_shock, simulate_var_sh
 def main():
     st.set_page_config(
         page_title="Macro Scenario Generator",
-        page_icon="📊",
+        page_icon="",
         layout="wide"
     )
     
-    st.title("📊 Macro Scenario Generator")
+    st.title("Macro Scenario Generator")
     st.markdown("---")
     
     # Sidebar para configuración
-    st.sidebar.header("⚙️ Configuración")
+    st.sidebar.header("Configuración")
     
     # Cargar modelo VAR
-    if st.sidebar.button("🔄 Cargar/Entrenar Modelo VAR"):
+    if st.sidebar.button("Cargar/Entrenar Modelo VAR"):
         with st.spinner("Entrenando modelo VAR..."):
             try:
                 var_results = train_var_model("data/series.pkl", lags=1)
                 st.session_state['var_results'] = var_results
-                st.sidebar.success(f"✅ Modelo entrenado con {len(var_results.names)} variables")
+                st.sidebar.success(f"Modelo entrenado con {len(var_results.names)} variables")
             except Exception as e:
-                st.sidebar.error(f"❌ Error: {str(e)}")
+                st.sidebar.error(f"Error: {str(e)}")
     
     # Verificar si el modelo está cargado
     if 'var_results' not in st.session_state:
-        st.warning("⚠️ Por favor, carga el modelo VAR desde la barra lateral")
+        st.warning("Por favor, carga el modelo VAR desde la barra lateral")
         return
     
     var_results = st.session_state['var_results']
@@ -58,7 +58,7 @@ def main():
     st.markdown("---")
     
     # Sección de escenarios predefinidos
-    st.header("🎯 Escenarios Predefinidos")
+    st.header("Escenarios Predefinidos")
     
     scenarios = {
         "Recesión": {
@@ -85,21 +85,21 @@ def main():
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        if st.button("📉 Ejecutar Recesión"):
+        if st.button("Ejecutar Recesión"):
             run_scenario("Recesión", scenarios["Recesión"])
     
     with col2:
-        if st.button("📈 Ejecutar Inflación"):
+        if st.button("Ejecutar Inflación"):
             run_scenario("Inflación", scenarios["Inflación"])
     
     with col3:
-        if st.button("📊 Ejecutar Recuperación"):
+        if st.button("Ejecutar Recuperación"):
             run_scenario("Recuperación", scenarios["Recuperación"])
     
     st.markdown("---")
     
     # Sección de escenario personalizado
-    st.header("🎛️ Escenario Personalizado")
+    st.header("Escenario Personalizado")
     
     col1, col2 = st.columns(2)
     
@@ -124,42 +124,42 @@ def main():
         shock_duration = st.slider("Duración del shock (meses)", 1, steps, min(3, steps))
         shock_decay = st.slider("Decaimiento del shock (0.0-1.0)", 0.0, 1.0, 1.0, step=0.05)
         st.info(f"Modo: {'Persistente' if shock_duration > 1 or shock_decay < 1.0 else 'Instantáneo'}")
-        if st.button("🚀 Ejecutar Escenario Personalizado") and custom_shocks:
+        if st.button("Ejecutar Escenario Personalizado") and custom_shocks:
             run_scenario("Personalizado", custom_shocks, var_results, steps, shock_duration, shock_decay)
     
     # Mostrar resultados si existen
     if 'current_simulation' in st.session_state:
         st.markdown("---")
-        st.header("📊 Resultados de la Simulación")
+        st.header("Resultados de la Simulación")
         
         simulation_df = st.session_state['current_simulation']
         scenario_name = st.session_state.get('current_scenario', 'Escenario')
         
         # Mostrar datos en tabla
-        st.subheader(f"📈 Datos de Simulación - {scenario_name}")
+        st.subheader(f"Datos de Simulación - {scenario_name}")
         # Mostrar modo de shock
         st.caption(f"Modo de shock: {st.session_state.get('shock_mode', 'Instantáneo')}")
         
         # Verificar que no hay columnas vacías
         if simulation_df.empty:
-            st.error("❌ No hay datos de simulación disponibles")
+            st.error("No hay datos de simulación disponibles")
         else:
             # Mostrar información de debug
-            st.info(f"📊 Forma de datos: {simulation_df.shape}")
-            st.info(f"📋 Columnas: {list(simulation_df.columns)}")
+            st.info(f"Forma de datos: {simulation_df.shape}")
+            st.info(f"Columnas: {list(simulation_df.columns)}")
             
             # Mostrar tabla
             st.dataframe(simulation_df, use_container_width=True)
         
         # Gráfico simple con st.line_chart
-        st.subheader("📊 Evolución de Variables")
+        st.subheader("Evolución de Variables")
         st.line_chart(simulation_df)
         
         # Estadísticas
         show_simulation_stats(simulation_df)
         
         # Generar narrativa
-        if st.button("🤖 Generar Narrativa"):
+        if st.button("Generar Narrativa"):
             with st.spinner("Generando narrativa con IA..."):
                 try:
                     from scripts.generate_narrative_simple import generate_narrative, generate_fallback_narrative
@@ -168,25 +168,25 @@ def main():
                     narrative = generate_narrative(simulation_df, {"scenario_name": scenario_name})
                     
                     # Si hay error con OpenAI, usar narrativa de respaldo
-                    if narrative.startswith("❌ Error"):
+                    if narrative.startswith("Error"):
                         narrative = generate_fallback_narrative(simulation_df, {"scenario_name": scenario_name})
-                        st.warning("⚠️ Usando narrativa automática (OpenAI no disponible)")
+                        st.warning("Usando narrativa automática (OpenAI no disponible)")
                     
                     st.session_state['current_narrative'] = narrative
-                    st.success("✅ Narrativa generada exitosamente")
+                    st.success("Narrativa generada exitosamente")
                 except Exception as e:
-                    st.error(f"❌ Error generando narrativa: {str(e)}")
+                    st.error(f"Error generando narrativa: {str(e)}")
         
         # Mostrar narrativa si existe
         if 'current_narrative' in st.session_state:
-            st.subheader("📝 Narrativa Económica")
+            st.subheader("Narrativa Económica")
             st.markdown(st.session_state['current_narrative'])
         
         # Exportar a CSV
-        if st.button("💾 Descargar CSV"):
+        if st.button("Descargar CSV"):
             csv = simulation_df.to_csv(index=True)
             st.download_button(
-                label="📥 Descargar CSV",
+                label="Descargar CSV",
                 data=csv,
                 file_name=f"{scenario_name}_simulation.csv",
                 mime="text/csv"
@@ -206,14 +206,14 @@ def run_scenario(scenario_name, shocks, var_results, steps=12, shock_duration=1,
                 st.session_state['shock_mode'] = "Instantáneo"
             st.session_state['current_simulation'] = simulation_df
             st.session_state['current_scenario'] = scenario_name
-            st.success(f"✅ Simulación {scenario_name} completada")
+            st.success(f"Simulación {scenario_name} completada")
         except Exception as e:
-            st.error(f"❌ Error en simulación: {str(e)}")
+            st.error(f"Error en simulación: {str(e)}")
 
 
 def show_simulation_stats(simulation_df):
     """Muestra estadísticas descriptivas de la simulación."""
-    st.subheader("📊 Estadísticas de la Simulación")
+    st.subheader("Estadísticas de la Simulación")
     
     # Calcular estadísticas
     stats_data = []
