@@ -162,7 +162,7 @@ Test coverage includes:
 
 ## Academic Context
 
-This project was developed as a **Master's Final Project (TFM)** demonstrating:
+This project was developed as a **Final Training Project** demonstrating:
 - **Advanced econometric modeling** with VAR techniques
 - **AI integration** in economic analysis
 - **Web application development** for financial tools
@@ -173,7 +173,7 @@ If you use this system in your research, please cite:
 ```
 Macro Scenario Generator: A VAR-based Economic Simulation Tool
 Francisco Cervantes Martínez
-Master's Final Project, 2025
+Final Training Project, 2025
 ```
 
 ## Contributing

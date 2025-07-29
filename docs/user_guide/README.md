@@ -32,7 +32,7 @@ If you use this system in your research, please cite:
 ```
 Macro Scenario Generator: A VAR-based Economic Simulation Tool
 Francisco Cervantes Martínez
-Master's Final Project, 2025
+Final Training Project, 2025
 ```
 
 ## Contributing
