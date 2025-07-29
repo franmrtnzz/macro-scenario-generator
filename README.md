@@ -131,13 +131,6 @@ OPENAI_API_KEY=your_openai_api_key_here
 - **Correlation threshold**: 0.85
 - **Standard deviation threshold**: 0.0001
 
-## Documentation
-
-- **[User Guide](docs/user_guide/)** - Complete user documentation
-- **[Technical Docs](docs/technical/)** - Architecture and implementation details
-- **[Quick Start](docs/user_guide/quick_start.md)** - Get started in 5 minutes
-- **[Examples](examples/)** - Usage examples and demonstrations
-
 ## Testing
 
 Run the comprehensive test suite:
@@ -209,13 +202,6 @@ python -m pytest tests/ --cov=quant --cov=scripts
 ## Author
 
 **Francisco Cervantes Martínez** - Master's Final Project (TFM)
-
-## Links
-
-- **Live Application**: [https://macro-scenario-generator-5tjq2bjtfww7hdkfyspbzg.streamlit.app/](https://macro-scenario-generator-5tjq2bjtfww7hdkfyspbzg.streamlit.app/)
-- **Documentation**: [docs/](docs/)
-- **Issues**: [GitHub Issues](https://github.com/franmrtnzz/macro-scenario-generator/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/franmrtnzz/macro-scenario-generator/discussions)
 
 ---
 
