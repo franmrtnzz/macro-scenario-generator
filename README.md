@@ -201,7 +201,7 @@ python -m pytest tests/ --cov=quant --cov=scripts
 
 ## Author
 
-**Francisco Cervantes Martínez** - Master's Final Project (TFM)
+**Francisco Cervantes Martínez** - Final Training Project
 
 ---
 
