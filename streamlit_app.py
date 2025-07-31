@@ -57,47 +57,6 @@ def main():
     
     st.markdown("---")
     
-    # Sección de escenarios predefinidos
-    st.header("Escenarios Predefinidos")
-    
-    scenarios = {
-        "Recesión": {
-            "gdp": {"magnitude": -0.1},
-            "inflation": {"magnitude": 0.05},
-            "policy_rate": {"magnitude": -0.02},
-            "real_rate": {"magnitude": -0.03}
-        },
-        "Inflación": {
-            "gdp": {"magnitude": -0.05},
-            "inflation": {"magnitude": 0.2},
-            "policy_rate": {"magnitude": 0.1},
-            "real_rate": {"magnitude": 0.05}
-        },
-        "Recuperación": {
-            "gdp": {"magnitude": 0.1},
-            "inflation": {"magnitude": 0.02},
-            "policy_rate": {"magnitude": 0.05},
-            "real_rate": {"magnitude": 0.03}
-        }
-    }
-    
-    # Botones para ejecutar escenarios
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        if st.button("Ejecutar Recesión"):
-            run_scenario("Recesión", scenarios["Recesión"])
-    
-    with col2:
-        if st.button("Ejecutar Inflación"):
-            run_scenario("Inflación", scenarios["Inflación"])
-    
-    with col3:
-        if st.button("Ejecutar Recuperación"):
-            run_scenario("Recuperación", scenarios["Recuperación"])
-    
-    st.markdown("---")
-    
     # Sección de escenario personalizado
     st.header("Escenario Personalizado")
     
