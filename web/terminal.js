@@ -10,20 +10,32 @@ const VARIABLES = {
 
 const DISPLAY_VARIABLES = ["gdp_growth", "inflation", "policy_rate", "real_rate", "output_gap"];
 
-// Mock market data. A live API can replace this array while preserving the same shape.
+const EUR_FORMAT = new Intl.NumberFormat("es-ES", {
+  style: "currency",
+  currency: "EUR",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+const PCT_FORMAT = new Intl.NumberFormat("es-ES", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+// EUR-denominated market tape. A live API can replace this array while preserving the same shape.
 const MARKET_TICKER = [
-  { symbol: "ES1", name: "S&P Fut", price: 5318.25, change: 18.5, pct: 0.35 },
-  { symbol: "NQ1", name: "Nasdaq Fut", price: 18742.75, change: 92.25, pct: 0.49 },
-  { symbol: "DAX", name: "Germany 40", price: 18631.4, change: -41.8, pct: -0.22 },
-  { symbol: "SX5E", name: "Euro Stoxx", price: 5037.18, change: 14.21, pct: 0.28 },
-  { symbol: "US10Y", name: "UST 10Y", price: 4.41, change: 0.03, pct: 0.68 },
-  { symbol: "EURUSD", name: "Euro", price: 1.0832, change: -0.0021, pct: -0.19 },
-  { symbol: "WTI", name: "Crude Oil", price: 78.64, change: 1.14, pct: 1.47 },
-  { symbol: "XAU", name: "Gold", price: 2348.9, change: -7.8, pct: -0.33 },
-  { symbol: "AAPL", name: "Apple", price: 228.75, change: 0.73, pct: 0.32 },
-  { symbol: "MSFT", name: "Microsoft", price: 415.57, change: -2.04, pct: -0.49 },
-  { symbol: "NVDA", name: "Nvidia", price: 146.73, change: 4.21, pct: 2.95 },
-  { symbol: "BTC", name: "Bitcoin", price: 93299.0, change: 213.4, pct: 0.23 },
+  { symbol: "EUNL.DE", name: "iShares Core MSCI World", price: 104.86, change: 0.42, pct: 0.40, currency: "EUR" },
+  { symbol: "IQQE.DE", name: "iShares MSCI EM", price: 66.34, change: -0.18, pct: -0.27, currency: "EUR" },
+  { symbol: "EXS1.DE", name: "DAX ETF", price: 188.72, change: 0.64, pct: 0.34, currency: "EUR" },
+  { symbol: "MSE.PA", name: "MSCI Europe ETF", price: 31.58, change: 0.09, pct: 0.29, currency: "EUR" },
+  { symbol: "SAN.MC", name: "Santander", price: 6.82, change: 0.05, pct: 0.74, currency: "EUR" },
+  { symbol: "BBVA.MC", name: "BBVA", price: 11.93, change: -0.08, pct: -0.67, currency: "EUR" },
+  { symbol: "ITX.MC", name: "Inditex", price: 44.28, change: -0.22, pct: -0.49, currency: "EUR" },
+  { symbol: "IBE.MC", name: "Iberdrola", price: 12.84, change: 0.07, pct: 0.55, currency: "EUR" },
+  { symbol: "ASML.AS", name: "ASML", price: 682.40, change: 5.10, pct: 0.75, currency: "EUR" },
+  { symbol: "SAP.DE", name: "SAP", price: 184.56, change: -1.14, pct: -0.61, currency: "EUR" },
+  { symbol: "MC.PA", name: "LVMH", price: 738.20, change: 4.80, pct: 0.65, currency: "EUR" },
+  { symbol: "BTC-EUR", name: "Bitcoin", price: 89550.00, change: -450.00, pct: -0.50, currency: "EUR" },
 ];
 
 const BASELINE = {
@@ -207,14 +219,19 @@ function renderAll() {
 
 function renderStockTicker(items) {
   const cells = [...items, ...items].map((asset) => {
-    const direction = asset.change >= 0 ? "up" : "down";
-    const arrow = asset.change >= 0 ? "▲" : "▼";
+    const change = numberOrZero(asset.change);
+    const direction = change >= 0 ? "up" : "down";
+    const arrow = change >= 0 ? "▲" : "▼";
     return `
       <span class="ticker-item ${direction}">
-        <strong>${asset.symbol}</strong>
-        <em>${asset.name}</em>
-        <b>${formatMarketPrice(asset.price)}</b>
-        <i>${arrow} ${signed(asset.change)} (${signed(asset.pct)}%)</i>
+        <span class="ticker-main">
+          <strong>${escapeHtml(asset.symbol)}</strong>
+          <em>${escapeHtml(asset.name)}</em>
+        </span>
+        <span class="ticker-pricing">
+          <b>${formatMarketPrice(asset.price)}</b>
+          <i>${arrow} ${signedCurrency(asset.change)} (${signedPct(asset.pct)})</i>
+        </span>
       </span>
     `;
   }).join("");
@@ -704,11 +721,23 @@ function formatDate(date) {
   return date.toISOString().slice(0, 10);
 }
 
+function numberOrZero(value) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
 function formatMarketPrice(value) {
-  const number = Number(value);
-  if (Math.abs(number) >= 1000) return number.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  if (Math.abs(number) >= 10) return number.toFixed(2);
-  return number.toFixed(4);
+  return EUR_FORMAT.format(numberOrZero(value));
+}
+
+function signedCurrency(value) {
+  const amount = numberOrZero(value);
+  return `${amount >= 0 ? "+" : "-"}${EUR_FORMAT.format(Math.abs(amount))}`;
+}
+
+function signedPct(value) {
+  const pct = numberOrZero(value);
+  return `${pct >= 0 ? "+" : "-"}${PCT_FORMAT.format(Math.abs(pct))}%`;
 }
 
 function clamp(value, low, high) {
