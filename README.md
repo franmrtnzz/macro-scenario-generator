@@ -1,75 +1,97 @@
 # Macro Scenario Generator
 
-A Streamlit application for running macroeconomic scenario simulations with vector autoregression (VAR) models.
+Macro Scenario Generator is a browser-based macroeconomic scenario lab for exploring how shocks propagate through growth, inflation, policy rates, real rates and the output gap.
 
-The project focuses on transparent scenario mechanics: loading macroeconomic time series, configuring shocks, simulating paths, visualizing results, and exporting outputs for further analysis.
+The platform is now a custom static dashboard. That gives the product stronger visual control, faster public access and a cleaner deployment path: anyone with the published URL can open the platform directly in their browser.
 
-## Features
+## What It Does
 
-- VAR model training for selected macroeconomic variables.
-- Shock simulation with configurable magnitude, horizon, persistence, and decay.
-- ECB and FRED data ingestion utilities.
-- Streamlit interface for scenario configuration and review.
-- CSV export for simulation outputs.
-- Optional narrative summary generation when an OpenAI API key is available.
+- Builds baseline and shocked macro paths over 6-60 months.
+- Supports demand, supply/energy, monetary policy, financial risk and fiscal shocks.
+- Shows baseline vs scenario paths and deviations from baseline.
+- Produces an analyst-style narrative with regime classification and coherence flags.
+- Includes a Bloomberg/IBKR-style market ticker with structured mock assets ready to connect to a live market-data API.
+- Exports scenario data and Markdown reports from the browser.
+
+## Run Locally
+
+```bash
+python -m http.server 8000 -d web
+```
+
+Open:
+
+```text
+http://localhost:8000
+```
+
+## Python Validation
+
+The Python modules remain as the reference engine and test layer.
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python -m pytest
+```
 
 ## Architecture
 
 ```text
 macro-scenario-generator/
-  api/                  ECB and FRED API clients
-  etl/                  data preparation pipeline
-  quant/                VAR model, input validation, and shock propagation
-  scripts/              narrative and maintenance scripts
-  utils/                export and transformation helpers
-  docs/                 technical notes and user guide
-  tests/                pytest suite
-  streamlit_app.py      Streamlit entry point
+|-- web/
+|   |-- index.html          # Browser dashboard
+|   |-- terminal.css        # Terminal/workstation product styling
+|   `-- terminal.js         # Frontend scenario engine, charts and ticker
+|-- quant/
+|   |-- macro_engine.py     # Python reference scenario engine
+|   `-- narrative.py        # Python narrative/report generation
+|-- etl/
+|   `-- pipeline.py         # Optional external data refresh helpers
+|-- utils/
+|-- input/
+|-- examples/
+|-- docs/
+`-- tests/
 ```
 
-The quantitative layer is separated from the Streamlit interface so model logic can be tested without the web application.
+## Deployment
 
-## Technology
+The dashboard is static. Recommended options:
 
-- Python
-- pandas and NumPy
-- statsmodels
-- scikit-learn
-- Streamlit
-- Plotly and Matplotlib
-- pytest
+- GitHub Pages serving the `web/` folder.
+- Netlify with publish directory `web`.
+- Vercel configured as a static project with output directory `web`.
+- Cloudflare Pages with build command empty and output directory `web`.
 
-## Local Setup
+No backend, API key or database is required for the public platform.
 
-```bash
-git clone https://github.com/franmrtnzz/macro-scenario-generator.git
-cd macro-scenario-generator
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-streamlit run streamlit_app.py
-```
+A GitHub Pages workflow is included in `.github/workflows/pages.yml`. Configure Pages to use `GitHub Actions` as the source and the generated URL will be public after the deployment run succeeds.
 
-On Windows, activate the virtual environment with `venv\Scripts\activate`.
+## Model Summary
 
-## Configuration
+The engine uses calibrated response profiles for five shock channels:
 
-Create a `.env` file only if you want narrative summaries:
+- Demand: activity first, inflation and policy with lags.
+- Supply / energy: inflation pressure plus weaker activity.
+- Monetary policy: direct rate path, delayed demand and inflation effects.
+- Financial risk: weaker activity, softer inflation and easier policy.
+- Fiscal impulse: activity support with mild inflation and policy effects.
 
-```env
-OPENAI_API_KEY=
-```
+Outputs are reported in interpretable units:
 
-The core VAR simulation and visualization workflow does not require this key.
+- GDP growth: `% y/y`
+- Inflation: `% y/y`
+- Policy rate: `%`
+- Real rate: `%`
+- Output gap: `% potential GDP`
 
-## Testing
+This is a scenario tool, not a point-forecasting system. It is designed for structured sensitivity analysis and communication, not for claims of econometric precision.
 
-```bash
-python -m pytest tests/
-```
+## Important Launch Reminder
 
-The tests cover API normalization, data processing, model training, and simulation helpers.
+When the final public URL is generated, update the platform links in:
 
-## Notes
-
-This is an applied modelling tool, not a forecasting product. VAR outputs depend heavily on variable selection, transformations, lag specification, and the historical sample. Results should be read as scenario mechanics rather than point forecasts.
+- the LinkedIn publication,
+- the website article.

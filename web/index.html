@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Macro Scenario Generator</title>
+    <link rel="preconnect" href="https://cdn.plot.ly" />
+    <link rel="stylesheet" href="./terminal.css?v=terminal-workstation-20260514-r2" />
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="terminal-chrome" aria-label="Terminal navigation">
+        <div class="window-row">
+          <div class="window-controls"><span></span><span></span><span></span></div>
+          <strong>MSG</strong>
+          <span>Macro Scenario Generator</span>
+          <span class="chrome-spacer"></span>
+          <span>DATA</span>
+          <strong id="clockDisplay">--:--:--</strong>
+        </div>
+        <div class="context-row">
+          <span>MACR SCEN</span>
+          <strong>Scenario Workstation</strong>
+          <span>Static public dashboard</span>
+          <span>Semi-structural engine</span>
+        </div>
+      </section>
+
+      <section class="stock-ticker" aria-label="Market ticker">
+        <div id="stockTickerTrack" class="stock-ticker-track"></div>
+      </section>
+
+      <header class="topbar">
+        <div>
+          <h1>Macro Scenario Generator</h1>
+          <p class="subtitle">Interpretable shock propagation for growth, inflation, policy rates and real rates.</p>
+        </div>
+        <div class="status-cluster" aria-label="Scenario status">
+          <div>
+            <span>Engine</span>
+            <strong>Semi-structural</strong>
+          </div>
+          <div>
+            <span>Mode</span>
+            <strong>Deterministic</strong>
+          </div>
+        </div>
+      </header>
+
+      <section id="marketStrip" class="market-strip" aria-label="Market style scenario strip"></section>
+
+      <section class="workspace">
+        <aside class="control-panel" aria-label="Scenario controls">
+          <div class="panel-heading">
+            <h2>Scenario setup</h2>
+            <p>Choose a preset, then adjust the shock design.</p>
+          </div>
+
+          <label class="field">
+            <span>Preset</span>
+            <select id="presetSelect"></select>
+          </label>
+
+          <p id="presetDescription" class="preset-description"></p>
+
+          <label class="field">
+            <span>Horizon</span>
+            <input id="horizonInput" type="range" min="6" max="60" step="1" />
+            <output id="horizonOutput"></output>
+          </label>
+
+          <div class="section-title">
+            <h3>Shock design</h3>
+            <button id="addShockButton" class="secondary-button" type="button">Add shock</button>
+          </div>
+          <div id="shockList" class="shock-list"></div>
+
+          <details class="assumption-box">
+            <summary>Baseline assumptions</summary>
+            <div class="assumption-grid">
+              <label><span>Trend growth</span><input id="trendGrowth" type="number" step="0.1" /></label>
+              <label><span>Initial GDP growth</span><input id="initialGrowth" type="number" step="0.1" /></label>
+              <label><span>Initial inflation</span><input id="initialInflation" type="number" step="0.1" /></label>
+              <label><span>Inflation target</span><input id="targetInflation" type="number" step="0.1" /></label>
+              <label><span>Initial policy rate</span><input id="initialPolicy" type="number" step="0.25" /></label>
+              <label><span>Neutral real rate</span><input id="neutralReal" type="number" step="0.1" /></label>
+              <label><span>Output gap</span><input id="initialGap" type="number" step="0.1" /></label>
+            </div>
+          </details>
+        </aside>
+
+        <section class="main-panel">
+          <section class="metric-grid" id="metricGrid" aria-label="Key scenario metrics"></section>
+
+          <section class="matrix-panel">
+            <div class="matrix-title">
+              <span>Scenario monitor</span>
+              <strong id="regimeLabel">--</strong>
+            </div>
+            <table id="scenarioMatrix" class="scenario-matrix"></table>
+          </section>
+
+          <nav class="tabs" aria-label="Dashboard sections">
+            <button class="tab-button active" data-tab="paths" type="button">Paths</button>
+            <button class="tab-button" data-tab="impact" type="button">Impact</button>
+            <button class="tab-button" data-tab="note" type="button">Analyst note</button>
+            <button class="tab-button" data-tab="data" type="button">Data</button>
+          </nav>
+
+          <section id="pathsTab" class="tab-panel active">
+            <div class="chart-header">
+              <div>
+                <h2>Baseline vs scenario</h2>
+                <p>Selected macro paths in user-facing units.</p>
+              </div>
+              <div class="variable-toggles" id="variableToggles"></div>
+            </div>
+            <div id="pathsChart" class="chart"></div>
+          </section>
+
+          <section id="impactTab" class="tab-panel">
+            <div class="chart-header">
+              <div>
+                <h2>Deviation from baseline</h2>
+                <p>Transmission strength and timing by macro variable.</p>
+              </div>
+            </div>
+            <div id="impactChart" class="chart"></div>
+            <div id="warningList" class="warning-list"></div>
+          </section>
+
+          <section id="noteTab" class="tab-panel">
+            <article id="analystNote" class="analyst-note"></article>
+            <button id="downloadReport" class="primary-button" type="button">Download Markdown report</button>
+          </section>
+
+          <section id="dataTab" class="tab-panel">
+            <div class="table-actions">
+              <h2>Scenario data</h2>
+              <button id="downloadCsv" class="primary-button" type="button">Download CSV</button>
+            </div>
+            <div class="data-table-wrap">
+              <table id="dataTable" class="data-table"></table>
+            </div>
+          </section>
+        </section>
+      </section>
+      <footer class="terminal-footer">MARKET DATA: MOCKED STRUCTURED FEED | OUTPUTS: SCENARIO ANALYSIS, NOT INVESTMENT ADVICE | STATIC PUBLIC WORKSTATION</footer>
+    </main>
+
+    <script src="./terminal.js?v=terminal-workstation-20260514-r2"></script>
+  </body>
+</html>

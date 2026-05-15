@@ -1,50 +1,25 @@
-# User Documentation
+# User Guide
 
-Welcome to the Macro Scenario Generator! This guide will help you understand and use the application effectively.
+## Basic Flow
 
-## Documentation Index
+1. Choose a scenario preset.
+2. Edit shocks in the shock cards.
+3. Adjust the horizon and baseline assumptions if needed.
+4. Review paths, deltas, coherence flags and the analyst note.
+5. Export the CSV or Markdown report.
 
-### Getting Started
-- **[Quick Start Guide](quick_start.md)** - Get up and running in 5 minutes
+## Reading The Dashboard
 
-### User Guides
-- **[Understanding VAR Models](understanding_var.md)** - Learn about the underlying model
-- **[Interpreting Results](interpreting_results.md)** - How to read charts and statistics
-- **[Scenario Design](scenario_design.md)** - How to create effective scenarios
+`Paths` compares baseline and shocked macro paths.
 
-### Advanced Usage
-- **[API Integration](api_integration.md)** - Using the system programmatically
-- **[Custom Models](custom_models.md)** - Extending the system
-- **[Troubleshooting](troubleshooting.md)** - Common issues and solutions
+`Impact` shows deviations from baseline. This view is usually the best way to understand transmission.
 
-## For Academic Users
+`Analyst note` gives a compact interpretation of the scenario regime, transmission, policy stance and risk flags.
 
-If you're using this for academic purposes (thesis, research, etc.):
+`Data` exposes the long-format dataset used by the charts.
 
-### Key Features for Research
-- **Reproducible results** - All simulations are deterministic
-- **Export capabilities** - CSV and JSON outputs for analysis
-- **Documentation** - Complete technical documentation
-- **Open source** - Full access to code and methodology
+## Practical Guidance
 
-### Citing This Work
-If you use this system in your research, please cite:
-```
-Macro Scenario Generator: A VAR-based Economic Simulation Tool
-Francisco Cervantes Martínez
-Final Training Project, 2025
-```
+Start with a preset and change one thing at a time. Scenarios are most useful when the shock is economically legible: a defined channel, clear magnitude, plausible duration and reasonable persistence.
 
-## Contributing
-
-Found a bug or have a suggestion? We welcome contributions!
-- Open an issue on GitHub
-- Submit a pull request
-- Join our discussions
-
-## Support
-
-Need help? Here are your options:
-1. **Check the documentation** - Most questions are answered here
-2. **Open a GitHub issue** - For bugs and feature requests
-3. **Review the code** - Everything is open source and well-documented 
+Very large shocks are clipped in the browser interface. The engine is calibrated for scenario analysis, not for extreme tail modelling.

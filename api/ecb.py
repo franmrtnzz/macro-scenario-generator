@@ -5,17 +5,17 @@ import requests
 def get_series_ecb(dataset: str, key: str) -> pd.DataFrame:
     """
     Descarga una serie SDMX-JSON desde el nuevo portal ECB
-    y la devuelve como DataFrame índice-fecha / columna ‘value’.
+    y la devuelve como DataFrame indice-fecha / columna value.
     """
     url = f"https://data-api.ecb.europa.eu/service/data/{dataset}/{key}"
     headers = {"Accept": "application/vnd.sdmx.data+json"}
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, timeout=30)
     response.raise_for_status()
     data = response.json()
 
-    # ---- jerarquía actual del endpoint moderno ----
+    # Current hierarchy for the modern endpoint.
     series_data  = data["dataSets"][0]["series"]
-    series_key   = next(iter(series_data))               # única clave de serie
+    series_key   = next(iter(series_data))
     observations = series_data[series_key]["observations"]
 
     time_periods = data["structure"]["dimensions"]["observation"][0]["values"]

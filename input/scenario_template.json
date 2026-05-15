@@ -1,0 +1,23 @@
+{
+  "scenario_name": "Energy price shock",
+  "horizon": 24,
+  "baseline": {
+    "trend_growth": 1.3,
+    "initial_gdp_growth": 1.1,
+    "target_inflation": 2.0,
+    "initial_inflation": 2.4,
+    "neutral_real_rate": 1.0,
+    "initial_policy_rate": 3.25,
+    "initial_output_gap": -0.2
+  },
+  "shocks": [
+    {
+      "name": "Energy price shock",
+      "channel": "Supply / energy",
+      "magnitude": 1.6,
+      "duration": 5,
+      "persistence": 0.82,
+      "start_month": 1
+    }
+  ]
+}

@@ -1,8 +1,9 @@
 # api/fred.py
 
+import os
+
 import pandas as pd
 import requests
-import os
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -11,10 +12,13 @@ def get_series_fred(series_id: str) -> pd.DataFrame:
     """
     Descarga una serie temporal desde la API de FRED y la devuelve como DataFrame.
     """
-    api_key = os.getenv("FRED_API_KEY") # Sustituye esto si no tienes la clave aún guardada en otro sitio
+    api_key = os.getenv("FRED_API_KEY")
+    if not api_key:
+        raise RuntimeError("FRED_API_KEY is required to refresh FRED data.")
+
     url = f"https://api.stlouisfed.org/fred/series/observations?series_id={series_id}&api_key={api_key}&file_type=json"
-    
-    response = requests.get(url)
+
+    response = requests.get(url, timeout=30)
     response.raise_for_status()
     data = response.json()
 

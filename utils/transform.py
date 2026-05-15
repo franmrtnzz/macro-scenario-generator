@@ -1,44 +1,40 @@
-# utils/transform.py
+"""Data transformation helpers for external macro series."""
+
+from __future__ import annotations
+
 import pandas as pd
 
-def normalize_series(df: pd.DataFrame, var_name: str | None = None) -> pd.DataFrame:
+
+def normalize_series(df: pd.DataFrame, var_name: str | None = None, *, minmax: bool = False) -> pd.DataFrame:
+    """Return a monthly DataFrame with columns date, variable and value.
+
+    The previous implementation always min-max scaled values. That is useful for
+    toy charts but harmful for macro interpretation, so raw units are preserved
+    by default.
     """
-    Normaliza una serie (min-max).  
-    Si se pasa `var_name`, añade columna 'variable'.
 
-    Parameters
-    ----------
-    df : pd.DataFrame
-        Índice fecha + columna 'value'.
-    var_name : str | None
-        Nombre interno de la variable.
+    if "value" not in df.columns:
+        raise ValueError("Input DataFrame must contain a 'value' column.")
 
-    Returns
-    -------
-    pd.DataFrame
-        • Sin var_name  → índice + 'value' normalizada.  
-        • Con var_name → columnas ['date', 'variable', 'value'].
-    """
-    df = df.copy()
+    clean = df.copy()
+    if "date" in clean.columns:
+        clean["date"] = pd.to_datetime(clean["date"], errors="coerce")
+        clean = clean.set_index("date")
+    else:
+        clean.index = pd.to_datetime(clean.index, errors="coerce")
 
-    # Asegurar que el índice es datetime y mensual
-    df = df.sort_index()
-    df.index = pd.to_datetime(df.index)
-    df = df.asfreq("MS")
+    clean = clean[["value"]].sort_index()
+    clean["value"] = pd.to_numeric(clean["value"], errors="coerce")
+    clean = clean[~clean.index.isna()]
+    clean = clean.resample("MS").mean().ffill()
 
-    # Normalizar
-    min_val = df["value"].min()
-    max_val = df["value"].max()
-    df["value"] = (df["value"] - min_val) / (max_val - min_val)
+    if minmax:
+        min_val = clean["value"].min()
+        max_val = clean["value"].max()
+        if max_val == min_val:
+            raise ValueError("Cannot min-max scale a constant series.")
+        clean["value"] = (clean["value"] - min_val) / (max_val - min_val)
 
-    # Caso sin var_name: serie con índice temporal
-    if var_name is None:
-        return df.sort_index()
-
-    # Caso con var_name: columna 'date' + 'variable' + 'value'
-    df = df.reset_index().rename(columns={"index": "date"})
-    df["date"] = pd.to_datetime(df["date"])
-    df["variable"] = var_name
-    df = df[["date", "variable", "value"]]
-
-    return df.sort_values("date")
+    out = clean.reset_index().rename(columns={"index": "date"})
+    out["variable"] = var_name or "series"
+    return out[["date", "variable", "value"]]

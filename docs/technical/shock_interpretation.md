@@ -1,89 +1,34 @@
-# Shock Interpretation Guide
+# Shock Interpretation
 
-## Understanding VAR Model Responses
+The rebuilt Macro Scenario Generator uses explicit economic channels.
 
-The Macro Scenario Generator uses a Vector Autoregression (VAR) model that produces economically realistic responses to shocks. This document explains how to interpret the results correctly.
+## Demand
 
-## Economic Interpretation of Responses
+Demand shocks move activity first. Inflation and policy react with lags. Positive demand shocks raise growth and the output gap; negative demand shocks weaken activity and tend to reduce inflation.
 
-### GDP Shocks
+## Supply / Energy
 
-**Expected Behavior**: GDP shocks show **mean reversion**
-- **Positive GDP shock** → **Initial negative response** → **Gradual return to trend**
-- **Negative GDP shock** → **Initial positive response** → **Gradual return to trend**
+Supply shocks primarily affect inflation. A positive energy shock raises inflation while reducing growth and the output gap. Policy reacts because the inflation impulse is visible even when activity weakens.
 
-**Economic Rationale**: 
-- GDP growth rates exhibit mean reversion in the data
-- Temporary shocks are followed by adjustment back to long-term trend
-- This is consistent with economic theory and empirical evidence
+## Monetary Policy
 
-### Inflation Shocks
+Monetary shocks directly alter the policy-rate path. Real rates move immediately, while growth and inflation respond with lags.
 
-**Expected Behavior**: Inflation shocks show **persistence**
-- **Positive inflation shock** → **Positive response** → **Gradual decay**
-- **Negative inflation shock** → **Negative response** → **Gradual decay**
+## Financial Risk
 
-**Economic Rationale**:
-- Inflation has persistence in the data
-- Price level changes tend to persist before adjusting
-- This reflects sticky prices and inflation expectations
+Financial risk shocks tighten private financial conditions. The engine models weaker activity, softer inflation and an easier policy path.
 
-### Policy Rate Shocks
+## Fiscal Impulse
 
-**Expected Behavior**: Policy rate shocks show **appropriate responses**
-- **Positive rate shock** → **Economic variables adjust accordingly**
-- **Negative rate shock** → **Economic variables adjust accordingly**
+Fiscal shocks support demand. They lift growth and the output gap first, with milder inflation and policy effects.
 
-**Economic Rationale**:
-- Monetary policy affects other variables through transmission channels
-- Responses depend on the model's estimated relationships
+## Units
 
-### Real Rate Shocks
+Magnitude is expressed in percentage points of the relevant channel:
 
-**Expected Behavior**: Real rate shocks show **appropriate responses**
-- **Positive real rate shock** → **Economic variables adjust accordingly**
-- **Negative real rate shock** → **Economic variables adjust accordingly**
+- Demand and fiscal: demand impulse.
+- Supply / energy: inflation impulse.
+- Monetary policy: policy-rate impulse.
+- Financial risk: stress impulse.
 
-**Economic Rationale**:
-- Real rates affect investment and consumption decisions
-- Responses reflect the model's estimated economic relationships
-
-## Why This Behavior is Correct
-
-### 1. Data-Driven Results
-The VAR model is estimated on actual economic data and captures the true relationships between variables.
-
-### 2. Economic Theory Consistency
-- **GDP mean reversion**: Consistent with growth theory and business cycles
-- **Inflation persistence**: Consistent with price stickiness and expectations
-- **Policy transmission**: Consistent with monetary economics
-
-### 3. Empirical Evidence
-The model's behavior matches observed patterns in macroeconomic data.
-
-## Interpreting Results
-
-### For GDP Shocks
-- **Positive shock**: Represents a temporary boost to growth that gradually returns to trend
-- **Negative shock**: Represents a temporary contraction that gradually recovers to trend
-
-### For Inflation Shocks  
-- **Positive shock**: Represents a price level increase that persists before adjusting
-- **Negative shock**: Represents a price level decrease that persists before adjusting
-
-### For Policy Rate Shocks
-- **Positive shock**: Represents a monetary tightening that affects other variables
-- **Negative shock**: Represents a monetary easing that affects other variables
-
-## Model Validation
-
-The VAR model has been validated to ensure:
-- **R² > 0.85**: High explanatory power
-- **Realistic responses**: Economically sensible behavior
-- **Stable dynamics**: No explosive or unrealistic patterns
-
-## Conclusion
-
-The shock responses in the Macro Scenario Generator are **economically correct** and reflect realistic macroeconomic dynamics. The apparent "sign inversion" for GDP is actually **mean reversion**, which is a fundamental feature of economic growth data.
-
-Users should interpret the results in terms of **economic dynamics** rather than expecting simple linear responses. 
+The resulting paths are not forecasts. They are structured sensitivity scenarios.

@@ -1,102 +1,97 @@
-# etl/pipeline.py
-from typing import Dict
-import os
+"""Optional ETL pipeline for refreshing external macro data."""
+
+from __future__ import annotations
+
 import pickle
+from pathlib import Path
+from typing import Any
+
 import pandas as pd
 
-from api.fred import get_series_fred
 from api.ecb import get_series_ecb
-from utils.transform import normalize_series
+from api.fred import get_series_fred
 from utils.io import save_series
+from utils.transform import normalize_series
 
-# ────────────────────────────────────────────────────────────────
-# 1️⃣ Variables a procesar
-# ────────────────────────────────────────────────────────────────
-VARIABLES: Dict[str, Dict] = {
+
+VARIABLES: dict[str, dict[str, Any]] = {
     "real_gdp_usa": {"source": "FRED", "id": "GDPC1"},
-    "hicp_ea":      {"source": "ECB",  "dataset": "ICP", "key": "M.U2.N.000000.4.INX"},
-    "policy_rate":  {"source": "FRED", "id": "ECBDFR"},
-    "long_rate":    {"source": "FRED", "id": "IRLTLT01EZM156N"},
+    "hicp_ea": {"source": "ECB", "dataset": "ICP", "key": "M.U2.N.000000.4.INX"},
+    "policy_rate": {"source": "FRED", "id": "ECBDFR"},
+    "long_rate": {"source": "FRED", "id": "IRLTLT01EZM156N"},
 }
 
-# ────────────────────────────────────────────────────────────────
-# 2️⃣ Helper: asegurar que cada objeto es Series con nombre fijo
-# ────────────────────────────────────────────────────────────────
-def ensure_series(obj, name: str) -> pd.Series:
-    """Convierte DataFrame o Series a Series con índice datetime y nombre correcto."""
-    if isinstance(obj, pd.DataFrame):
-        if "value" in obj.columns:
-            obj = obj["value"]
-        else:
-            obj = obj.iloc[:, 0]
-    obj = obj.astype(float)
-    obj.index = pd.to_datetime(obj.index)
-    obj.name = name
-    return obj
 
-# ────────────────────────────────────────────────────────────────
-# 3️⃣ Ejecutar ETL (descargar → normalizar → guardar)
-# ────────────────────────────────────────────────────────────────
-def run_etl_pipeline(vars_cfg: Dict[str, Dict]) -> None:
+def run_etl_pipeline(vars_cfg: dict[str, dict[str, Any]] | None = None) -> dict[str, pd.DataFrame]:
+    """Download and persist configured series without executing on import."""
+
+    vars_cfg = vars_cfg or VARIABLES
+    outputs: dict[str, pd.DataFrame] = {}
     for name, cfg in vars_cfg.items():
-        print(f"\n🔄 Procesando {name} ...")
-        if cfg["source"].upper() == "FRED":
-            df_raw = get_series_fred(cfg["id"])
-        elif cfg["source"].upper() == "ECB":
-            df_raw = get_series_ecb(cfg["dataset"], cfg["key"])
-        else:
-            print(f"⚠️  Fuente desconocida: {cfg['source']} → omito")
-            continue
-        df_norm = normalize_series(df_raw, name)
-        save_series(df_norm, name)
+        raw = _download_series(cfg)
+        normalized = normalize_series(raw, name)
+        save_series(normalized, name)
+        outputs[name] = normalized
+    return outputs
 
-run_etl_pipeline(VARIABLES)
 
-# ────────────────────────────────────────────────────────────────
-# 4️⃣ Cargar series individuales como Series limpias
-# ────────────────────────────────────────────────────────────────
-with open("data/real_gdp_usa.pkl", "rb") as f:
-    gdp_df = pickle.load(f)
-gdp_series = (
-    gdp_df.set_index("date")["value"].astype(float)
-)
-gdp_series.index = pd.to_datetime(gdp_series.index)
-gdp_series.name = "gdp"
+def build_series_dataset(data_dir: str | Path = "data") -> dict[str, pd.Series]:
+    """Build a unified series dictionary from previously saved ETL files."""
 
-with open("data/hicp_ea.pkl", "rb") as f:
-    inflation_series = ensure_series(pickle.load(f), "inflation")
+    data_dir = Path(data_dir)
+    gdp = _load_saved_series(data_dir / "real_gdp_usa.pkl", "gdp")
+    inflation = _load_saved_series(data_dir / "hicp_ea.pkl", "inflation")
+    policy_rate = _load_saved_series(data_dir / "policy_rate.pkl", "policy_rate")
+    long_rate = _load_saved_series(data_dir / "long_rate.pkl", "long_rate")
 
-with open("data/policy_rate.pkl", "rb") as f:
-    policy_rate_series = ensure_series(pickle.load(f), "policy_rate")
+    aligned = pd.concat([policy_rate, long_rate, inflation], axis=1).dropna()
+    spread = (aligned["long_rate"] - aligned["policy_rate"]).rename("spread")
+    real_rate = (aligned["policy_rate"] - aligned["inflation"]).rename("real_rate")
 
-with open("data/long_rate.pkl", "rb") as f:
-    long_rate_series = ensure_series(pickle.load(f), "long_rate")
+    series = {
+        "gdp": gdp,
+        "inflation": inflation,
+        "policy_rate": policy_rate,
+        "long_rate": long_rate,
+        "spread": spread,
+        "real_rate": real_rate,
+    }
 
-# ────────────────────────────────────────────────────────────────
-# 5️⃣ Series derivadas: spread y real_rate
-# ────────────────────────────────────────────────────────────────
-aligned = pd.concat(
-    [policy_rate_series, long_rate_series, inflation_series],
-    axis=1
-).dropna()
+    with (data_dir / "series.pkl").open("wb") as handle:
+        pickle.dump(series, handle)
+    return series
 
-spread_series    = (aligned["long_rate"] - aligned["policy_rate"]).rename("spread")
-real_rate_series = (aligned["policy_rate"] - aligned["inflation"]).rename("real_rate")
 
-# ────────────────────────────────────────────────────────────────
-# 6️⃣ Diccionario final y guardado
-# ────────────────────────────────────────────────────────────────
-series_dict = {
-    "gdp":         gdp_series,
-    "inflation":   inflation_series,
-    "policy_rate": policy_rate_series,
-    "long_rate":   long_rate_series,
-    "spread":      spread_series,
-    "real_rate":   real_rate_series,
-}
+def _download_series(cfg: dict[str, Any]) -> pd.DataFrame:
+    source = str(cfg["source"]).upper()
+    if source == "FRED":
+        return get_series_fred(str(cfg["id"]))
+    if source == "ECB":
+        return get_series_ecb(str(cfg["dataset"]), str(cfg["key"]))
+    raise ValueError(f"Unknown data source: {cfg['source']}")
 
-os.makedirs("data", exist_ok=True)
-with open("data/series.pkl", "wb") as f:
-    pickle.dump(series_dict, f)
 
-print("✅ Archivo unificado series.pkl guardado con: gdp, inflation, policy_rate, long_rate, spread, real_rate")
+def _load_saved_series(path: Path, name: str) -> pd.Series:
+    if not path.exists():
+        raise FileNotFoundError(f"Missing ETL output: {path}")
+
+    obj = pd.read_pickle(path)
+    if isinstance(obj, pd.Series):
+        series = obj.copy()
+    elif isinstance(obj, pd.DataFrame):
+        if "date" not in obj.columns or "value" not in obj.columns:
+            raise ValueError(f"{path} must contain date and value columns.")
+        series = obj.assign(date=pd.to_datetime(obj["date"], errors="coerce")).set_index("date")["value"]
+    else:
+        raise TypeError(f"Unsupported object in {path}: {type(obj).__name__}")
+
+    series = pd.to_numeric(series, errors="coerce").sort_index()
+    series.index = pd.to_datetime(series.index, errors="coerce")
+    series = series[~series.index.isna()].resample("MS").mean().ffill()
+    series.name = name
+    return series
+
+
+if __name__ == "__main__":
+    run_etl_pipeline()
+    build_series_dataset()
